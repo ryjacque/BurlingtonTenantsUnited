@@ -1,7 +1,9 @@
 import React from 'react'
 import { Form, Input, FormGroup, Label, Button } from "reactstrap";
+import { useState, useNavigate } from 'react-router-dom'
 
-function Login() {
+function Login(props) {
+  const navigate=useNavigate()
     let reqObject = {};
     function handleChange(e) {
       reqObject[e.target.name] = e.target.value;
@@ -19,14 +21,15 @@ function Login() {
         ),
       })
         .then(async (res) => {
-            console.log("there's a res")
-          if (!res.ok) {
-            let error = await res.json()
-            console.log(error)
-          } else {
+            console.log("there's a res", res.status)
+          if (res.status===200)  {
             e.target.reset(); // TODO: change this so redirected instead of just form reset
             console.log("user logged in");
+            props.setAdminMode(true)
+            navigate('/admin')
   
+          } else {
+            console.log(res)
           }
         })
   

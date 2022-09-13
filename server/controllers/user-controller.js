@@ -1,24 +1,21 @@
-const  User  = require("../models/User-schema");
+require("dotenv").config();
+const User = require("../models/User-schema");
 const router = require("express").Router();
+const PASSWORD = process.env.PASSWORD;
 
-router.route("/newuser").post(async (req, res) => {   
-  const {
-    firstName,
-    lastName,
-    email,
-    
-  } = req.body;
+router.route("/newuser").post(async (req, res) => {
+  const { firstName, lastName, email } = req.body;
   try {
-      if (!firstName || !lastName || !email){
-          throw new Error('Insufficient data')
-      } else {
-          console.log(req.body)
-        let newUser = new User({
-            firstName,
-            lastName,
-            email
-          })
-          req.body.isAdmin ? newUser[isAdmin] = true : null
+    if (!firstName || !lastName || !email) {
+      throw new Error("Insufficient data");
+    } else {
+      console.log(req.body);
+      let newUser = new User({
+        firstName,
+        lastName,
+        email,
+      });
+      req.body.isAdmin ? (newUser[isAdmin] = true) : null;
       try {
         await newUser.save();
         res.status(201).json({
@@ -26,43 +23,40 @@ router.route("/newuser").post(async (req, res) => {
           newUser,
         });
       } catch (error) {
-        if(error.errors){
+        if (error.errors) {
           const missingData = Object.keys(error.errors);
           throw new Error(
             `you are missing the following data: ${[...missingData]}`
           );
         } else {
-          throw error
+          throw error;
         }
       }
     }
-  } catch(err){
-      throw new Error(err)
-}
+  } catch (err) {
+    throw new Error(err);
+  }
 });
 
-router.route('/login').post(async (req, res)=>{
-    const {
-        email,
-        password
-    } = req.body
-try{
-    let user = await User.findOne({email})
-    if (!user){
-        throw new Error('no user found')
-    } else if (password===user.password){
-        console.log('Successful login!')
+router.route("/login").post(async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      console.log('user not found')
+      res.sendStatus(400)
+    } else if (password === PASSWORD && user.isAdmin) {
+      console.log("Successful login!");
+      res.sendStatus(200);
+    } else {
+      console.log('incorrect credentials')
+      res.sendStatus(401);
     }
-    else {
-       throw new Error('Incorrect password', user)
-    }
-} catch(err){
-    console.log('--------------', err)
-    res.send(err)
-}
-
-
-})
+  } catch (err) {
+    console.log("--------------", err);
+    res.send(err);
+  }
+});
 //TODO: inform front-end of results!
 
 module.exports = router;
