@@ -1,0 +1,23 @@
+
+#review-form {
+    margin: 0;
+    padding: 2vw;
+    border-radius: 10px;
+    box-shadow: 10px 10px 30px -10px rgb(146, 145, 145);
+    font-family: Arial, Helvetica, sans-serif;
+
+    /* max-height: 75vh; */
+    /* overflow: auto; */
+    
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+    padding: 1vw;
+}
+.form-group Input{
+    padding-top: 1vw;
+}
+#submit-button{
+    padding: 1vw;
+}
